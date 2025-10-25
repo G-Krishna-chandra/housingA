@@ -520,13 +520,28 @@ def extract_images_from_html(html_content):
                 image_urls.append(data_src)
         
         # Search for Zillow photo URLs in the raw HTML content
-        zillow_photo_pattern = r'https://photos\.zillowstatic\.com/fp/([a-f0-9]{32})-cc_ft_\d+\.(jpg|webp|png)'
-        found_matches = re.findall(zillow_photo_pattern, html_content)
-        for match in found_matches:
-            base_id, extension = match
-            # Try to get the highest resolution version
-            full_url = f"https://photos.zillowstatic.com/fp/{base_id}-cc_ft_1536.{extension}"
-            image_urls.append(full_url)
+        # Enhanced pattern to catch more image types
+        zillow_photo_patterns = [
+            r'https://photos\.zillowstatic\.com/fp/([a-f0-9]{32})-cc_ft_\d+\.(jpg|webp|png)',
+            r'https://photos\.zillowstatic\.com/fp/([a-f0-9]{32})-o_a\.(jpg|webp|png)',
+            r'https://photos\.zillowstatic\.com/fp/([a-f0-9]{32})-r_b\.(jpg|webp|png)',
+            r'https://photos\.zillowstatic\.com/fp/([a-f0-9]{32})-cc_ft_\d+\.(jpg|webp|png)',
+            r'https://photos\.zillowstatic\.com/fp/([a-f0-9]{32})-[^\"\s]+\.(jpg|webp|png)'
+        ]
+        
+        # First, find all Zillow photo URLs directly
+        all_zillow_urls = re.findall(r'https://photos\.zillowstatic\.com/fp/[a-f0-9]{32}-[^\"\s]+', html_content)
+        for url in all_zillow_urls:
+            image_urls.append(url)
+        
+        # Then use the pattern matching for additional processing
+        for pattern in zillow_photo_patterns:
+            found_matches = re.findall(pattern, html_content)
+            for match in found_matches:
+                base_id, extension = match
+                # Try to get the highest resolution version first
+                high_res_url = f"https://photos.zillowstatic.com/fp/{base_id}-cc_ft_1536.{extension}"
+                image_urls.append(high_res_url)
         
         # Remove duplicates and filter to get only unique images (highest resolution)
         unique_images = filter_unique_images(image_urls)
@@ -553,10 +568,22 @@ def filter_unique_images(image_urls):
         
         for url in image_urls:
             # Extract the base identifier from Zillow URLs
-            # Example: https://photos.zillowstatic.com/fp/abc123-cc_ft_768.jpg -> abc123
-            base_match = re.search(r'/([a-f0-9]{32})-cc_ft_\d+\.(jpg|webp|png)', url)
-            if base_match:
-                base_id = base_match.group(1)
+            # Handle different Zillow URL patterns
+            patterns = [
+                r'/([a-f0-9]{32})-cc_ft_\d+\.(jpg|webp|png)',
+                r'/([a-f0-9]{32})-o_a\.(jpg|webp|png)',
+                r'/([a-f0-9]{32})-r_b\.(jpg|webp|png)',
+                r'/([a-f0-9]{32})-[^/]+\.(jpg|webp|png)'
+            ]
+            
+            base_id = None
+            for pattern in patterns:
+                base_match = re.search(pattern, url)
+                if base_match:
+                    base_id = base_match.group(1)
+                    break
+            
+            if base_id:
                 if base_id not in image_groups:
                     image_groups[base_id] = []
                 image_groups[base_id].append(url)
@@ -692,19 +719,30 @@ Examples:
     json_data = extract_json_from_page(html_content)
     
     image_urls = []
+    json_images = []
+    
     if json_data:
         # Extract image URLs from JSON
         print("Parsing image URLs from JSON...")
-        image_urls = extract_image_urls(json_data)
+        json_images = extract_image_urls(json_data)
+        if json_images:
+            json_images = filter_unique_images(json_images)
+            print(f"Found {len(json_images)} images from JSON")
     
-    # If no images found in JSON, try extracting from HTML directly
-    if not image_urls:
-        print("No images found in JSON, trying to extract from HTML...")
-        image_urls = extract_images_from_html(html_content)
-    else:
-        # Filter JSON results to get unique images only
-        print("Filtering JSON results to get unique images...")
-        image_urls = filter_unique_images(image_urls)
+    # Always try HTML extraction for comprehensive results
+    print("Extracting images from HTML...")
+    html_images = extract_images_from_html(html_content)
+    
+    # Combine both sources and remove duplicates
+    all_images = json_images + html_images
+    image_urls = filter_unique_images(all_images)
+    
+    if json_images and html_images:
+        print(f"Combined {len(json_images)} JSON images with {len(html_images)} HTML images")
+    elif json_images:
+        print(f"Using {len(json_images)} images from JSON only")
+    elif html_images:
+        print(f"Using {len(html_images)} images from HTML only")
     
     # Print results
     print_image_urls(image_urls)
