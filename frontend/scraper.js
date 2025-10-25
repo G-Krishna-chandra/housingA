@@ -584,19 +584,18 @@ class ImageScraper {
     }
 
     /**
-     * Scrape and prepare images for analysis
+     * Scrape and prepare ALL unique images for analysis
      * @param {string} url - URL to scrape
-     * @param {number} maxImages - Maximum number of images to process
      * @returns {Promise<Array>} Array of prepared images
      */
-    async scrapeAndPrepareImages(url, maxImages = 20) {
+    async scrapeAndPrepareImages(url) {
         try {
             const images = await this.fetchImagesFromUrl(url);
-            const limitedImages = images.slice(0, maxImages);
+            console.log(`🔍 Found ${images.length} unique images, processing ALL of them...`);
             
             const preparedImages = [];
             
-            for (const img of limitedImages) {
+            for (const img of images) {
                 try {
                     console.log(`🔄 Processing image: ${img.filename}`);
                     const base64 = await this.imageUrlToBase64(img.url);
@@ -612,7 +611,7 @@ class ImageScraper {
                 }
             }
             
-            console.log(`✅ Successfully prepared ${preparedImages.length} images`);
+            console.log(`✅ Successfully prepared ALL ${preparedImages.length} unique images`);
             return preparedImages;
             
         } catch (error) {

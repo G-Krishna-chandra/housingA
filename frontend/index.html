@@ -333,9 +333,8 @@
                     <h3>🌐 From Web Scraping</h3>
                     <p>Enter URLs to scrape images from</p>
                     <input type="url" id="urlInput" class="url-input" placeholder="https://www.zillow.com/homedetails/...">
-                    <div style="display: flex; gap: 10px; margin: 10px 0;">
-                        <input type="number" id="maxImages" class="url-input" placeholder="Max images" value="20" min="1" max="50" style="flex: 1;">
-                        <button class="upload-btn" onclick="scrapeImages()">Scrape Images</button>
+                    <div style="margin: 10px 0;">
+                        <button class="upload-btn" onclick="scrapeImages()" style="width: 100%;">🔍 Scrape ALL Unique Images</button>
                     </div>
                     <div style="margin: 10px 0; padding: 10px; background: #f8f9ff; border-radius: 8px; font-size: 0.9rem;">
                         <strong>💡 Pro Tips:</strong><br>
@@ -413,7 +412,6 @@
 
         async function scrapeImages() {
             const url = document.getElementById('urlInput').value.trim();
-            const maxImages = parseInt(document.getElementById('maxImages').value) || 20;
             const statusDiv = document.getElementById('scrapingStatus');
             
             if (!url) {
@@ -422,9 +420,9 @@
             }
 
             try {
-                statusDiv.innerHTML = `<span style="color: blue;">🔄 Scraping up to ${maxImages} images...</span>`;
+                statusDiv.innerHTML = `<span style="color: blue;">🔄 Scraping ALL unique images...</span>`;
                 
-                const scrapedImages = await imageScraper.scrapeAndPrepareImages(url, maxImages);
+                const scrapedImages = await imageScraper.scrapeAndPrepareImages(url);
                 
                 if (scrapedImages.length === 0) {
                     statusDiv.innerHTML = `
@@ -441,7 +439,7 @@
                     addImageToPreview(img.filename, `data:image/jpeg;base64,${img.base64}`);
                 });
 
-                statusDiv.innerHTML = `<span style="color: green;">✅ Found and added ${scrapedImages.length} images</span>`;
+                statusDiv.innerHTML = `<span style="color: green;">✅ Found and added ALL ${scrapedImages.length} unique images</span>`;
                 document.getElementById('urlInput').value = '';
 
             } catch (error) {
