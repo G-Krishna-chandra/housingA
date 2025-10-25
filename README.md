@@ -1,10 +1,14 @@
-# Zillow Image Scraper
+# HousingA - Comprehensive Housing Analysis Platform
+
+This repository contains two complementary projects for housing analysis and accessibility assessment:
+
+## 🏠 Project 1: Zillow Image Scraper (Web Application)
 
 A comprehensive Python application that scrapes property images from Zillow listings and stores them in organized S3 buckets. Features both a command-line interface and a modern web application.
 
-## 🚀 Features
+### 🚀 Features
 
-### Core Functionality
+#### Core Functionality
 - ✅ **Smart Image Extraction** - Finds all unique property images from Zillow listings
 - ✅ **S3 Integration** - Automatically uploads images to organized S3 folders
 - ✅ **Web Interface** - Modern, responsive web application
@@ -12,7 +16,7 @@ A comprehensive Python application that scrapes property images from Zillow list
 - ✅ **Duplicate Filtering** - Removes duplicate images across different resolutions
 - ✅ **Error Handling** - Graceful handling of network issues and missing data
 
-### Web Application Features
+#### Web Application Features
 - 🎨 **Modern UI** - Bootstrap-based responsive design
 - 📱 **Mobile Friendly** - Works on all device sizes
 - 🖼️ **Image Gallery** - Beautiful gallery view with modal lightbox
@@ -20,7 +24,7 @@ A comprehensive Python application that scrapes property images from Zillow list
 - ⬇️ **Bulk Download** - Download all images at once
 - 📊 **Statistics** - View image counts and processing status
 
-## 🏗️ Architecture
+### 🏗️ Architecture
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
@@ -35,24 +39,157 @@ A comprehensive Python application that scrapes property images from Zillow list
                        └──────────────────┘
 ```
 
-## 📦 Installation
+### 🚀 Usage
+
+#### Web Application
+1. **Start the web server**
+```bash
+python app.py
+```
+
+2. **Open your browser**
+```
+http://localhost:5000
+```
+
+3. **Enter a Zillow URL and click "Extract Images"**
+
+#### Command Line Interface
+```bash
+# Basic usage
+python zillow_image_scraper.py "https://www.zillow.com/homedetails/123-Main-St-San-Jose-CA-95112/123456_zpid/"
+
+# Upload to S3
+python zillow_image_scraper.py "https://www.zillow.com/homedetails/123-Main-St-San-Jose-CA-95112/123456_zpid/" --s3
+
+# Download locally
+python zillow_image_scraper.py "https://www.zillow.com/homedetails/123-Main-St-San-Jose-CA-95112/123456_zpid/" --download
+```
+
+---
+
+## ♿ Project 2: Home Accessibility Checker (AWS Lambda Backend)
+
+A Python-based AWS Lambda backend system for analyzing home environments and providing accessibility recommendations using Amazon Rekognition and Amazon Bedrock.
+
+### 🏗️ Architecture Overview
+
+This backend system consists of two main Lambda functions that work together to analyze home images and generate accessibility recommendations:
+
+#### 1. Rekognition Handler (`/lambdas/rekognition_handler/`)
+- **Purpose**: Processes images using Amazon Rekognition to detect objects, labels, and accessibility features
+- **Input**: S3 bucket and key for image location
+- **Output**: Analysis results including detected objects, accessibility features, and potential barriers
+- **Key Features**:
+  - Object detection and labeling
+  - Accessibility feature identification
+  - Barrier detection
+  - Accessibility scoring
+
+#### 2. LLM Handler (`/lambdas/llm_handler/`)
+- **Purpose**: Uses Amazon Bedrock to generate intelligent recommendations based on Rekognition analysis
+- **Input**: Rekognition analysis results and image metadata
+- **Output**: Structured recommendations and improvement suggestions
+- **Key Features**:
+  - AI-powered accessibility recommendations
+  - Improvement suggestions with priority levels
+  - Cost and implementation difficulty estimates
+
+### 📁 Project Structure
+
+```
+aws/
+├── lambdas/
+│   ├── rekognition_handler/
+│   │   └── lambda_function.py      # Rekognition Lambda handler
+│   └── llm_handler/
+│       └── lambda_function.py     # LLM Lambda handler
+├── utils/
+│   ├── __init__.py
+│   ├── logger.py                   # Logging utility
+│   ├── image_processor.py        # Image processing utilities
+│   └── bedrock_client.py           # Bedrock LLM client
+├── tests/
+│   ├── __init__.py
+│   ├── test_rekognition_handler.py
+│   ├── test_llm_handler.py
+│   ├── test_image_processor.py
+│   └── test_bedrock_client.py
+├── requirements.txt                # Python dependencies
+├── env.example                     # Environment variables template
+└── README.md                       # This file
+```
+
+### 🔧 AWS Services Used
+
+#### Amazon Rekognition
+- **Object Detection**: Identifies furniture, fixtures, and architectural elements
+- **Label Detection**: Recognizes accessibility-related features and barriers
+- **Custom Analysis**: Analyzes images for accessibility compliance
+
+#### Amazon Bedrock
+- **Claude 3 Sonnet**: Large Language Model for generating recommendations
+- **Structured Output**: JSON-formatted recommendations and suggestions
+- **Context-Aware**: Uses Rekognition results to provide relevant advice
+
+#### Amazon S3
+- **Image Storage**: Stores uploaded home images for analysis
+- **Lambda Integration**: Provides images to Lambda functions
+
+### 🚀 Usage Flow
+
+1. **Image Upload**: User uploads home image to S3
+2. **Rekognition Analysis**: First Lambda processes image with Amazon Rekognition
+3. **LLM Processing**: Second Lambda generates recommendations using Bedrock
+4. **Response**: Structured recommendations returned to client
+
+### 🧪 Testing
+
+Run tests using pytest:
+
+```bash
+# Install test dependencies
+pip install pytest pytest-mock
+
+# Run all tests
+pytest tests/
+
+# Run specific test file
+pytest tests/test_rekognition_handler.py
+
+# Run with verbose output
+pytest -v tests/
+```
+
+---
+
+## 📦 Installation & Setup
 
 ### Prerequisites
-- Python 3.9+
+- Python 3.9+ (for Zillow scraper) / Python 3.11 (for Lambda backend)
 - AWS Account with S3 access
 - AWS credentials configured
+- Docker (for local development)
+- AWS SAM CLI (for deployment)
 
 ### Setup Steps
 
 1. **Clone the repository**
 ```bash
-git clone <repository-url>
+git clone https://github.com/G-Krishna-chandra/housingA.git
 cd housingA
 ```
 
 2. **Install dependencies**
 ```bash
+# Install Python dependencies
 pip install -r requirements.txt
+
+# Install development dependencies
+pip install pytest pytest-mock moto boto3
+
+# Or use the Makefile
+make install
 ```
 
 3. **Configure AWS credentials**
@@ -72,42 +209,120 @@ cp env.example .env
 # Edit .env with your configuration
 ```
 
-## 🚀 Usage
+## 🧪 Local Development & Testing
 
-### Web Application
-
-1. **Start the web server**
+### Quick Start
 ```bash
-python app.py
+# Set up development environment
+make dev-setup
+
+# Run all tests
+make test
+
+# Start local API Gateway
+make start-api
 ```
 
-2. **Open your browser**
-```
-http://localhost:5000
-```
-
-3. **Enter a Zillow URL and click "Extract Images"**
-
-### Command Line Interface
-
-#### Basic Usage (List Image URLs)
+### Testing Commands
 ```bash
-python zillow_image_scraper.py "https://www.zillow.com/homedetails/123-Main-St-San-Jose-CA-95112/123456_zpid/"
+# Run all tests
+make test
+
+# Run unit tests only
+make test-unit
+
+# Run local testing script
+make test-local
+
+# Test individual functions
+make test-presigned
+make test-rekognition
+make test-llm
+make test-orchestrator
+
+# Test API endpoints
+make test-api
 ```
 
-#### Upload to S3
+### Local AWS Simulation
 ```bash
-python zillow_image_scraper.py "https://www.zillow.com/homedetails/123-Main-St-San-Jose-CA-95112/123456_zpid/" --s3
+# Start LocalStack for local AWS services
+make setup-localstack
+
+# Or manually with Docker Compose
+docker-compose up -d localstack
+
+# Check LocalStack status
+curl http://localhost:4566/health
 ```
 
-#### Download Locally
+### Local Lambda Testing
 ```bash
-python zillow_image_scraper.py "https://www.zillow.com/homedetails/123-Main-St-San-Jose-CA-95112/123456_zpid/" --download
+# Test individual Lambda functions
+python test_local.py --test
+
+# Test specific function
+python test_local.py --function presigned
+python test_local.py --function rekognition
+python test_local.py --function llm
+python test_local.py --function orchestrator
+
+# Simulate API calls
+python test_local.py --simulate
 ```
 
-#### Custom S3 Bucket
+### Local API Gateway
 ```bash
-python zillow_image_scraper.py "https://www.zillow.com/homedetails/123-Main-St-San-Jose-CA-95112/123456_zpid/" --s3 --bucket my-custom-bucket
+# Start local API Gateway
+make start-api
+
+# Test endpoints
+curl -X POST http://localhost:3000/presigned-url \
+  -H "Content-Type: application/json" \
+  -d '{"filename": "test.jpg", "content_type": "image/jpeg"}'
+
+curl -X POST http://localhost:3000/analyze \
+  -H "Content-Type: application/json" \
+  -d '{"images": [{"bucket": "test", "key": "test.jpg"}]}'
+```
+
+## 🛠️ Development Commands
+
+### Makefile Commands
+```bash
+# Show all available commands
+make help
+
+# Setup & Installation
+make install              # Install Python dependencies
+make setup-localstack     # Start LocalStack for local AWS simulation
+make dev-setup           # Complete development environment setup
+
+# Testing
+make test                # Run all tests (unit + local)
+make test-unit           # Run unit tests with pytest
+make test-local          # Run local testing script
+make test-presigned      # Test Presigned URL function
+make test-rekognition    # Test Rekognition function
+make test-llm           # Test LLM function
+make test-orchestrator  # Test Orchestrator function
+make test-api           # Test API endpoints
+
+# Development
+make invoke-local        # Test individual Lambda functions locally
+make start-api          # Start local API Gateway
+make clean              # Clean up temporary files
+
+# Deployment
+make build              # Build SAM application
+make deploy             # Deploy to AWS using SAM
+make deploy-dev         # Deploy to dev environment
+make deploy-prod        # Deploy to prod environment
+
+# Docker
+make docker-up          # Start all Docker services
+make docker-down        # Stop all Docker services
+make docker-logs        # Show Docker logs
 ```
 
 ## 🐳 Docker Deployment
@@ -121,18 +336,17 @@ docker-compose up --build
 docker-compose up -d
 ```
 
-### Using Docker
-```bash
-# Build the image
-docker build -t zillow-scraper .
+## 🔧 Configuration
 
-# Run the container
-docker run -p 5000:5000 \
-  -e AWS_ACCESS_KEY_ID=your_key \
-  -e AWS_SECRET_ACCESS_KEY=your_secret \
-  -e S3_BUCKET_NAME=your-bucket \
-  zillow-scraper
-```
+### Environment Variables
+- `AWS_ACCESS_KEY_ID` - Your AWS access key
+- `AWS_SECRET_ACCESS_KEY` - Your AWS secret key
+- `AWS_DEFAULT_REGION` - AWS region (default: us-east-1)
+- `S3_BUCKET_NAME` - S3 bucket name (default: zillow-images)
+- `BEDROCK_MODEL_ID` - Bedrock model ID for Lambda backend
+- `FLASK_ENV` - Flask environment (development/production)
+- `SECRET_KEY` - Flask secret key for sessions
+- `PORT` - Server port (default: 5000)
 
 ## 📁 S3 Organization
 
@@ -149,22 +363,6 @@ your-bucket/
 │   │   └── ...
 │   └── ...
 ```
-
-## 🔧 Configuration
-
-### Environment Variables
-- `AWS_ACCESS_KEY_ID` - Your AWS access key
-- `AWS_SECRET_ACCESS_KEY` - Your AWS secret key
-- `AWS_DEFAULT_REGION` - AWS region (default: us-east-1)
-- `S3_BUCKET_NAME` - S3 bucket name (default: zillow-images)
-- `FLASK_ENV` - Flask environment (development/production)
-- `SECRET_KEY` - Flask secret key for sessions
-- `PORT` - Server port (default: 5000)
-
-### S3 Bucket Setup
-1. Create an S3 bucket in your AWS account
-2. Configure bucket permissions for your application
-3. Set the bucket name in your environment variables
 
 ## 🛠️ API Endpoints
 
@@ -184,6 +382,7 @@ your-bucket/
 
 ## 🔍 How It Works
 
+### Zillow Scraper
 1. **URL Validation** - Ensures the URL is a valid Zillow listing
 2. **Page Fetching** - Downloads the listing page with browser-like headers
 3. **Image Discovery** - Multiple methods to find images:
@@ -194,10 +393,16 @@ your-bucket/
 5. **S3 Upload** - Organizes and uploads images to S3
 6. **Results** - Returns organized image URLs and metadata
 
+### Accessibility Checker
+1. **Image Analysis** - Amazon Rekognition analyzes uploaded images
+2. **Feature Detection** - Identifies accessibility features and barriers
+3. **AI Recommendations** - Amazon Bedrock generates intelligent suggestions
+4. **Structured Output** - Returns prioritized recommendations and improvements
+
 ## 🚨 Error Handling
 
-The application handles various error conditions:
-- Invalid Zillow URLs
+Both applications handle various error conditions:
+- Invalid URLs
 - Network connectivity issues
 - Missing AWS credentials
 - S3 upload failures
