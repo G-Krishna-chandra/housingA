@@ -105,17 +105,18 @@ const LeftPanel = ({ analysis }) => {
         </div>
       </div>
 
-      {/* Detailed Analysis Accordion */}
+      {/* Detailed Analysis Accordion - ADA Requirements */}
       <div className="border-t border-gray-200 pt-6">
-        <h3 className="text-lg font-bold text-gray-800 mb-4">Detailed Analysis</h3>
+        <h3 className="text-lg font-bold text-gray-800 mb-2">ADA Compliance Analysis</h3>
+        <p className="text-xs text-gray-600 mb-4">Based on ADA home accessibility standards</p>
         
-        {/* Entrances & Exterior */}
+        {/* 1. Accessible Entrances */}
         <AccordionSection
-          title="Entrances & Exterior Pathways"
-          isOpen={openSection === 'entrances'}
-          onToggle={() => toggleSection('entrances')}
+          title="1. Accessible Entrances"
+          isOpen={openSection === 'accessibleEntrances'}
+          onToggle={() => toggleSection('accessibleEntrances')}
         >
-          {analysis.details.entrances.map((item) => (
+          {analysis.details.accessibleEntrances.map((item) => (
             <DetailItem
               key={item.id}
               item={item}
@@ -125,13 +126,13 @@ const LeftPanel = ({ analysis }) => {
           ))}
         </AccordionSection>
 
-        {/* Interior Doors & Hallways */}
+        {/* 2. Accessible Routes */}
         <AccordionSection
-          title="Interior Doors & Hallways"
-          isOpen={openSection === 'interior'}
-          onToggle={() => toggleSection('interior')}
+          title="2. Accessible Routes"
+          isOpen={openSection === 'accessibleRoutes'}
+          onToggle={() => toggleSection('accessibleRoutes')}
         >
-          {analysis.details.interior.map((item) => (
+          {analysis.details.accessibleRoutes.map((item) => (
             <DetailItem
               key={item.id}
               item={item}
@@ -141,13 +142,13 @@ const LeftPanel = ({ analysis }) => {
           ))}
         </AccordionSection>
 
-        {/* Kitchen */}
+        {/* 3. Bathroom Accessibility */}
         <AccordionSection
-          title="Kitchen"
-          isOpen={openSection === 'kitchen'}
-          onToggle={() => toggleSection('kitchen')}
+          title="3. Bathroom Accessibility"
+          isOpen={openSection === 'bathroomAccessibility'}
+          onToggle={() => toggleSection('bathroomAccessibility')}
         >
-          {analysis.details.kitchen.map((item) => (
+          {analysis.details.bathroomAccessibility.map((item) => (
             <DetailItem
               key={item.id}
               item={item}
@@ -157,13 +158,45 @@ const LeftPanel = ({ analysis }) => {
           ))}
         </AccordionSection>
 
-        {/* Bathroom */}
+        {/* 4. Kitchen Accessibility */}
         <AccordionSection
-          title="Bathroom"
-          isOpen={openSection === 'bathroom'}
-          onToggle={() => toggleSection('bathroom')}
+          title="4. Kitchen Accessibility"
+          isOpen={openSection === 'kitchenAccessibility'}
+          onToggle={() => toggleSection('kitchenAccessibility')}
         >
-          {analysis.details.bathroom.map((item) => (
+          {analysis.details.kitchenAccessibility.map((item) => (
+            <DetailItem
+              key={item.id}
+              item={item}
+              getStatusColor={getStatusColor}
+              getStatusIcon={getStatusIcon}
+            />
+          ))}
+        </AccordionSection>
+
+        {/* 5. Light Switches and Controls */}
+        <AccordionSection
+          title="5. Light Switches & Controls"
+          isOpen={openSection === 'controlsAndSwitches'}
+          onToggle={() => toggleSection('controlsAndSwitches')}
+        >
+          {analysis.details.controlsAndSwitches.map((item) => (
+            <DetailItem
+              key={item.id}
+              item={item}
+              getStatusColor={getStatusColor}
+              getStatusIcon={getStatusIcon}
+            />
+          ))}
+        </AccordionSection>
+
+        {/* 6. Stairways and Elevators */}
+        <AccordionSection
+          title="6. Stairways & Elevators"
+          isOpen={openSection === 'stairwaysAndElevators'}
+          onToggle={() => toggleSection('stairwaysAndElevators')}
+        >
+          {analysis.details.stairwaysAndElevators.map((item) => (
             <DetailItem
               key={item.id}
               item={item}

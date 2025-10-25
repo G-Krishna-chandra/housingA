@@ -3,30 +3,47 @@ import LeftPanel from './components/LeftPanel.jsx';
 import RightPanel from './components/RightPanel.jsx';
 import './App.css';
 
-// Mock data
+// Mock data based on ADA Requirements
 const mockAnalysisResult = {
-  overallScore: 78,
-  summary: "This property offers good potential with wide hallways and a modern kitchen but has significant barriers at the main entrance and in the primary bathroom that require attention.",
+  overallScore: 72,
+  summary: "This property shows good accessibility in routes and kitchen areas but requires modifications at entrances and bathrooms to meet full ADA compliance. Key improvements needed include step-free entry and proper grab bar installation.",
   flags: {
-    greenFlags: ["No interior steps on main floor", "Countertops at standard height", "Wide hallways"],
-    redFlags: ["Steps at main entrance", "Narrow bathroom doorway", "High-pile carpet in living room"]
+    greenFlags: ["Wide hallways (36+ inches)", "Countertops at ADA height (34 inches)", "Non-slip flooring", "Accessible light switches"],
+    redFlags: ["Steps at main entrance", "Missing grab bars", "Bathroom sink too high", "Narrow bathroom doorway"]
   },
   details: {
-    entrances: [
-      { id: 1, name: "Step-Free Entry", status: "fail", description: "3 steps detected at the front door." },
-      { id: 2, name: "Doorway Width", status: "pass", description: "Front door estimated at 36 inches." }
+    accessibleEntrances: [
+      { id: 1, name: "No-Step Entry", status: "fail", description: "ADA requires at least one no-step entry. 3 steps detected at main entrance without ramp." },
+      { id: 2, name: "Doorway Width (32\" min)", status: "pass", description: "Front door measures 36 inches, exceeding the 32-inch minimum requirement." },
+      { id: 3, name: "Entry Landing", status: "warn", description: "Landing area appears adequate but may need verification for proper dimensions." }
     ],
-    interior: [
-      { id: 3, name: "Hallway Width", status: "pass", description: "Hallways appear to be over 40 inches wide." },
-      { id: 4, name: "Interior Door Width", status: "warn", description: "Most doors seem adequate, but bathroom door may be under 32 inches." }
+    accessibleRoutes: [
+      { id: 4, name: "Hallway Width (36\" min)", status: "pass", description: "Hallways measure approximately 42 inches wide, meeting ADA requirements." },
+      { id: 5, name: "Smooth, Non-Slip Flooring", status: "pass", description: "Hardwood flooring detected with appropriate slip-resistance." },
+      { id: 6, name: "Clear Pathways", status: "pass", description: "No obstructions detected in main pathways." }
     ],
-    kitchen: [
-      { id: 5, name: "Countertop Height", status: "pass", description: "Counters are at a standard 34-inch height." },
-      { id: 6, name: "Appliance Accessibility", status: "pass", description: "Front-facing controls on oven and microwave." }
+    bathroomAccessibility: [
+      { id: 7, name: "Sink Height (34\" max)", status: "fail", description: "Sink appears mounted at approximately 36 inches, exceeding the 34-inch maximum." },
+      { id: 8, name: "Toilet Seat Height (17-19\")", status: "pass", description: "Toilet seat height appears to be within the 17-19 inch range." },
+      { id: 9, name: "Grab Bars - Toilet", status: "fail", description: "No grab bars detected around toilet area. ADA requires installation." },
+      { id: 10, name: "Grab Bars - Shower", status: "fail", description: "No grab bars detected in shower area. ADA requires proper installation." },
+      { id: 11, name: "Door Width (32\" min)", status: "warn", description: "Bathroom door appears narrow, may be under 32-inch minimum." }
     ],
-    bathroom: [
-      { id: 7, name: "Roll-in Shower", status: "fail", description: "Standard tub/shower combo detected." },
-      { id: 8, name: "Grab Bar Potential", status: "warn", description: "No grab bars present, but wall structure appears suitable for installation." }
+    kitchenAccessibility: [
+      { id: 12, name: "Countertop Height (34\" max)", status: "pass", description: "Kitchen counters are at standard 34-inch height, meeting ADA requirements." },
+      { id: 13, name: "Clear Space Under Sink", status: "warn", description: "Some clearance visible but may require cabinet removal for full wheelchair access." },
+      { id: 14, name: "Clear Space Under Countertops", status: "warn", description: "Limited knee clearance detected. May need modification for wheelchair users." },
+      { id: 15, name: "Appliance Controls", status: "pass", description: "Front-facing controls detected on major appliances." }
+    ],
+    controlsAndSwitches: [
+      { id: 16, name: "Switch Height (15-48\")", status: "pass", description: "Light switches appear positioned between 42-44 inches, within ADA range." },
+      { id: 17, name: "Outlet Height", status: "pass", description: "Outlets positioned at accessible heights throughout main living areas." },
+      { id: 18, name: "Thermostat Height", status: "warn", description: "Thermostat may be above 48-inch maximum. Verification recommended." }
+    ],
+    stairwaysAndElevators: [
+      { id: 19, name: "Stair Handrails", status: "warn", description: "Handrails present but may only be on one side. ADA requires both sides." },
+      { id: 20, name: "Handrail Height", status: "pass", description: "Handrails appear to be at proper height (34-38 inches)." },
+      { id: 21, name: "Elevator/Stairlift", status: "fail", description: "Multi-story home with no elevator or stairlift detected." }
     ]
   },
   images: [
