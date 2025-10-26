@@ -103,6 +103,118 @@
             </div>
         </div>
 
+        <!-- Accessibility Analysis Section -->
+        {% if result and result.accessibility_analysis %}
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-universal-access"></i> ADA Accessibility Analysis
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Overall Score -->
+                        <div class="row mb-4">
+                            <div class="col-12 text-center">
+                                <div class="display-4 fw-bold text-primary">
+                                    {{ result.accessibility_analysis.overall_score or 0 }}
+                                </div>
+                                <h5 class="text-muted">Overall Accessibility Score</h5>
+                                <p class="text-muted">Based on analysis of {{ images|length }} images</p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Positive Features -->
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100 border-success">
+                                    <div class="card-header bg-success text-white">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-check-circle"></i> Positive Features
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        {% if result.accessibility_analysis.positive_features %}
+                                            <ul class="list-unstyled mb-0">
+                                                {% for feature in result.accessibility_analysis.positive_features %}
+                                                <li class="mb-2">
+                                                    <i class="fas fa-check text-success me-2"></i>
+                                                    {{ feature }}
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% else %}
+                                            <p class="text-muted mb-0">No specific positive features identified</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Areas for Improvement -->
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100 border-warning">
+                                    <div class="card-header bg-warning text-dark">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-exclamation-triangle"></i> Areas for Improvement
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        {% if result.accessibility_analysis.areas_for_improvement %}
+                                            <ul class="list-unstyled mb-0">
+                                                {% for area in result.accessibility_analysis.areas_for_improvement %}
+                                                <li class="mb-2">
+                                                    <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                                                    {{ area }}
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% else %}
+                                            <p class="text-muted mb-0">No specific areas for improvement identified</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Recommendations -->
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100 border-info">
+                                    <div class="card-header bg-info text-white">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-lightbulb"></i> Recommendations
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        {% if result.accessibility_analysis.recommendations %}
+                                            <ul class="list-unstyled mb-0">
+                                                {% for recommendation in result.accessibility_analysis.recommendations %}
+                                                <li class="mb-2">
+                                                    <i class="fas fa-lightbulb text-info me-2"></i>
+                                                    {{ recommendation }}
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% else %}
+                                            <p class="text-muted mb-0">No specific recommendations provided</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Error Message -->
+                        {% if result.accessibility_analysis.error %}
+                        <div class="alert alert-danger mt-3">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <strong>Analysis Error:</strong> {{ result.accessibility_analysis.error }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
         <!-- Action Buttons -->
         <div class="row mb-4">
             <div class="col-12">
